@@ -110,8 +110,13 @@ async def list_tools():
 
 @server.call_tool()
 async def call_tool(name, arguments):
+    # If the upstream session is mid-reconnect (e.g. the gateway restarted), wait
+    # briefly for it to come back instead of failing the call outright.
     if upstream.session is None:
-        raise RuntimeError("upstream session not ready")
+        try:
+            await asyncio.wait_for(upstream.ready.wait(), timeout=30)
+        except asyncio.TimeoutError:
+            raise RuntimeError("upstream session not ready after 30s")
     result = await upstream.session.call_tool(name, arguments)
     # Preserve structured output so tools that declare an outputSchema validate downstream.
     if getattr(result, "structuredContent", None) is not None:
