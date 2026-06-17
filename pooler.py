@@ -116,7 +116,7 @@ async def call_tool(name, arguments):
         try:
             await asyncio.wait_for(upstream.ready.wait(), timeout=30)
         except asyncio.TimeoutError:
-            raise RuntimeError("upstream session not ready after 30s")
+            raise RuntimeError("upstream session not ready after 30s") from None
     result = await upstream.session.call_tool(name, arguments)
     # Preserve structured output so tools that declare an outputSchema validate downstream.
     if getattr(result, "structuredContent", None) is not None:
