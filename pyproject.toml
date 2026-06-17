@@ -1,6 +1,6 @@
 [project]
 name = "mcp-pooler"
-version = "0.1.1"
+version = "0.1.2"
 description = "A caching connection pooler in front of an aggregating MCP gateway (e.g. MetaMCP)."
 readme = "README.md"
 license = { text = "MIT" }

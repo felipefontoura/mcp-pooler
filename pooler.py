@@ -105,6 +105,11 @@ server = Server("mcp-pooler")
 
 @server.list_tools()
 async def list_tools():
+    # Drop outputSchema: some upstream tools declare one but return plain text
+    # content, which makes strict downstream clients reject an otherwise-valid
+    # result ("outputSchema defined but no structured output returned").
+    for tool in upstream.tools:
+        tool.outputSchema = None
     return upstream.tools  # served from cache — instant
 
 
